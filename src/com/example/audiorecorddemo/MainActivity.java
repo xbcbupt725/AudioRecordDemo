@@ -23,16 +23,20 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
+import com.example.utl.MyRecorder;
+import com.sogou.speech.settings.IRecordAudioConfig;
+
  public class MainActivity extends Activity {
     private boolean isRecording = false ;
     private Object tmp = new Object() ;
-   
-   
+    public static final int PCM_16BIT = AudioFormat.ENCODING_PCM_16BIT;
+    public static final int PCM_8BIT = AudioFormat.ENCODING_PCM_8BIT;
+    MyRecorder myRecorder = new MyRecorder();
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-       
+        
         Button start = (Button)findViewById(R.id.start_bt) ;
         start.setOnClickListener(new OnClickListener()
         {
@@ -40,12 +44,13 @@ import android.widget.Button;
             @Override
             public void onClick(View arg0) {
                 // TODO Auto-generated method stub
-                Thread thread = new Thread(new Runnable() {
-                    public void run() {
-                      record();
-                    }    
-                  });
-                  thread.start();
+//                Thread thread = new Thread(new Runnable() {
+//                    public void run() {
+//                      record();
+//                    }    
+//                  });
+//                  thread.start();
+            	myRecorder.startRec();
                   findViewById(R.id.start_bt).setEnabled(false) ;
                   findViewById(R.id.end_bt).setEnabled(true) ;
             }
@@ -58,7 +63,7 @@ import android.widget.Button;
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                play();
+               // play();
             }
          
         }) ;
@@ -69,7 +74,8 @@ import android.widget.Button;
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                isRecording = false ;
+                //isRecording = false ;
+            	myRecorder.stopRecording("xbc.wav");
                 findViewById(R.id.start_bt).setEnabled(true) ;
                 findViewById(R.id.end_bt).setEnabled(false) ;
             }
@@ -127,8 +133,8 @@ import android.widget.Button;
     }
  
     public void record() {
-      int frequency = 11025;
-      int channelConfiguration = AudioFormat.CHANNEL_CONFIGURATION_MONO;
+      int frequency = PCM_16BIT;
+      int channelConfiguration = IRecordAudioConfig.MONO;
       int audioEncoding = AudioFormat.ENCODING_PCM_16BIT;
       File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/reverseme.pcm");
       
@@ -173,5 +179,14 @@ import android.widget.Button;
       } catch (Throwable t) {
         Log.e("AudioRecord","Recording Failed");
       }
+//      PCM2WAV p2w = new PCM2WAV();
+//      String src = Environment.getExternalStorageDirectory().getAbsolutePath() + "/reverseme.pcm";
+//      String target = Environment.getExternalStorageDirectory().getAbsolutePath() + "/reverseme.wav";
+//      try {
+//		p2w.convertAudioFiles(src, target);
+//	} catch (Exception e) {
+//		// TODO Auto-generated catch block
+//		e.printStackTrace();
+//	}
     }
 }
